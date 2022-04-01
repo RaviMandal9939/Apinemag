@@ -7,7 +7,6 @@ apk update && apk add wget axel bash net-tools openssl openjdk11 && rm -rf /var/
 axel https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.9.0-linux-x86_64.tar.gz && tar -xf  elasticsearch-7.9.0-linux-x86_64.tar.gz -C /usr/share/ \
     && echo -e "export ES_JAVA_HOME=/usr/lib/jvm/java-11-openjdk\nexport JAVA_HOME=/usr/lib/jvm/java-11-openjdk" >> /etc/profile \
     && mv /usr/share/elasticsearch-7.9* /usr/share/elasticsearch \
-#   && mkdir /usr/share/elasticsearch/logs \
     && mkdir /usr/share/elasticsearch/data \
     && mkdir /usr/share/elasticsearch/config/scripts \
     && adduser -D -u 1000 -h /usr/share/elasticsearch elasticsearch \
@@ -18,16 +17,14 @@ axel https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.9.0-li
 	apk add mysql mysql-client && \
 	addgroup mysql mysql && \
 	mkdir /scripts && \
-	rm -rf /var/cache/apk/*
-#VOLUME ["/var/lib/mysql"]
+	rm -rf /var/cache/apk/* /elasticsearch-7.9.0-linux-x86_64.tar.gz
+
 COPY auth.json /root/.composer/auth.json
 COPY startup.sh /startup.sh
-#COPY auth.json /var/www/html/magento/var/composer_home/auth.json
 COPY elasticsearch.yml /usr/share/elasticsearch/config/elasticsearch.yml
 COPY default.conf /etc/nginx/conf.d/default.conf
-#RUN chmod +x /scripts/startup.sh
-#mv /var/lib/mysql /tmp
+COPY php.ini /etc/php7/php.ini
+COPY www.conf /etc/php7/php-fpm.d/
 WORKDIR /var/www/html/magento
 ENTRYPOINT ["/startup.sh"]
-COPY php.ini /etc/php7/php.ini
 EXPOSE 9200 9300 3306 80

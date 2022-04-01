@@ -1,7 +1,11 @@
 #!/bin/sh
 #elasticsearch
 su - elasticsearch -c /usr/share/elasticsearch/bin/elasticsearch > /dev/null 2>&1 & 
-
+#nginx
+mkdir /run/nginx
+nginx
+#php
+php-fpm7
 #mysql
 if [ ! -d "/run/mysqld" ]; then
 mkdir -p /run/mysqld
@@ -34,13 +38,26 @@ echo "[i] Sleeping 5 sec"
 sleep 5
 echo "Starting all process"
 exec /usr/bin/mysqld --user=mysql --console --log-bin-trust-function-creators=1 &
-
-
-
-
-#php
-#!/bin/bash
 composer create-project --no-interaction --repository-url=https://repo.magento.com/ magento/project-community-edition=2.4.3 /var/www/html/magento  
-find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} + && find var generated vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} + && chown -R :www-data . && chmod u+x bin/magento && chmod -R 777 var generated && php bin/magento setup:install --base-url=http://magealpinerv.com/ --db-host=localhost --db-name=magento --db-user=magento --db-password=magento --admin-firstname=admin --admin-lastname=admin --admin-email=admin@admin.com --admin-user=admin --admin-password=admin123 --language=en_US --currency=USD --timezone=Asia/Kolkata --use-rewrites=1 && cp /root/.composer/auth.json /var/www/html/magento/var/composer_home/auth.json &&  php -d memory_limit=-1 bin/magento sampledata:deploy && php bin/magento se:up && php bin/magento module:disable Magento_TwoFactorAuth &&  php bin/magento module:disable Magento_TwoFactorAuth  && php bin/magento setup:static-content:deploy -f && php bin/magento c:c && php bin/magento c:f
-
+find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} + 
+find var generated vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} + 
+chown -R root:www-data . 
+chmod u+x bin/magento 
+chmod -R 777  pub/static generated/ var/cache/
+php bin/magento setup:install --base-url=http://magealpinerv.com/ --db-host=localhost --db-name=magento --db-user=magento --db-password=magento --admin-firstname=admin --admin-lastname=admin --admin-email=admin@admin.com --admin-user=admin --admin-password=admin123 --language=en_US --currency=USD --timezone=Asia/Kolkata --use-rewrites=1
+cp /root/.composer/auth.json /var/www/html/magento/var/composer_home/auth.json
+find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} + 
+find var generated vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} + 
+chown -R root:www-data . 
+chmod u+x bin/magento 
+chmod -R 777  pub/static generated/ var/cache/ 
+printf "yes" | php -d memory_limit=-1 bin/magento sampledata:deploy
+php bin/magento se:up 
+php bin/magento module:disable Magento_TwoFactorAuth
+php bin/magento setup:di:compile
+php bin/magento setup:static-content:deploy -f
+php bin/magento c:c && php bin/magento c:f
+chmod -R 777  pub/static generated/ var/cache
+chown -R root:www-data .
+hostname -i
 watch netstat -tulpn
