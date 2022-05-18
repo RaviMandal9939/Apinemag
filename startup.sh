@@ -44,7 +44,8 @@ find var generated vendor pub/static pub/media app/etc -type d -exec chmod g+ws 
 chown -R root:www-data . 
 chmod u+x bin/magento 
 chmod -R 777  pub/static generated/ var/cache/
-php bin/magento setup:install --base-url=http://magealpinerv.com/ --db-host=localhost --db-name=magento --db-user=magento --db-password=magento --admin-firstname=admin --admin-lastname=admin --admin-email=admin@admin.com --admin-user=admin --admin-password=admin123 --language=en_US --currency=USD --timezone=Asia/Kolkata --use-rewrites=1
+php bin/magento setup:install --base-url=http://alpinerv2.com/ --db-host=localhost --db-name=magento --db-user=magento --db-password=magento --admin-firstname=admin --admin-lastname=admin --admin-email=admin@admin.com --admin-user=admin --admin-password=admin123 --language=en_US --currency=USD --timezone=Asia/Kolkata --use-rewrites=1
+
 cp /root/.composer/auth.json /var/www/html/magento/var/composer_home/auth.json
 find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} + 
 find var generated vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} + 
@@ -57,7 +58,7 @@ php bin/magento module:disable Magento_TwoFactorAuth
 php bin/magento setup:di:compile
 php bin/magento setup:static-content:deploy -f
 php bin/magento c:c && php bin/magento c:f
-chmod -R 777  pub/static generated/ var/cache
 chown -R root:www-data .
-hostname -i
+chmod -R 777  pub/static generated/ var/cache
+chmod -R 777 pub/static generated/ var/  
 watch netstat -tulpn
